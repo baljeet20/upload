@@ -1,0 +1,19 @@
+# Eclipse Files
+.settings
+.project
+.classpath
+
+# IntelliJ IDEA files
+.idea
+*.iml
+*.ipr
+*.iws
+atlassian-ide-plugin.xml
+
+# Generated files
+target
+logs
+
+# Mac OS X files
+*~
+.DS_Store
