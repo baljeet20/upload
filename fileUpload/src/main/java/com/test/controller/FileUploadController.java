@@ -1,6 +1,5 @@
 package com.test.controller;
 
-import com.test.processor.FileProcessor;
 import com.test.service.FileProcessingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +16,7 @@ import java.io.IOException;
 public class FileUploadController {
 
     @Autowired
-    FileProcessor fileProcessor;
+    FileProcessingService fileProcessingService;
 
 
     @RequestMapping("/upload")
@@ -34,7 +33,7 @@ public class FileUploadController {
 
         try {
             byte[] bytes = file.getBytes();
-            fileProcessor.process(file);
+            fileProcessingService.process(file);
 
 
         } catch (IOException e) {
