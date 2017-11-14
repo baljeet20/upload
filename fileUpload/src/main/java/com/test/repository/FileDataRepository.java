@@ -4,6 +4,7 @@ import com.test.model.Employee;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +19,10 @@ public class FileDataRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Value("${com.test.batch.size}")
+    int batchSize;
+
     public void save(List<String> result) {
-
-        int batchSize=2;
-
-
 
         jdbcTemplate.execute("DROP TABLE employees IF EXISTS");
         jdbcTemplate.execute("CREATE TABLE employees(" +
