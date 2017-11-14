@@ -20,6 +20,9 @@ public class FileDataRepository {
 
     public void save(List<String> result) {
 
+        int batchSize=2;
+
+
 
         jdbcTemplate.execute("DROP TABLE employees IF EXISTS");
         jdbcTemplate.execute("CREATE TABLE employees(" +
@@ -29,7 +32,12 @@ public class FileDataRepository {
                 .map(record -> record.split(","))
                 .collect(Collectors.toList());
 
-        jdbcTemplate.batchUpdate("INSERT INTO employees(id,first_name, last_name,birthdate,salary) VALUES (?,?,?,?,?)", splitRecord);
+        for (int j = 0; j < splitRecord.size(); j += batchSize) {
+            final List<Object[]> batchList = splitRecord.subList(j, j + batchSize > splitRecord.size() ? splitRecord.size() : j + batchSize);
+            jdbcTemplate.batchUpdate("INSERT INTO employees(id,first_name, last_name,birthdate,salary) VALUES (?,?,?,?,?)", batchList);
+
+        }
+
         jdbcTemplate.query(
                 "SELECT id, first_name, last_name,birthdate,salary FROM employees WHERE id = ?", new Object[] { 1},
                 (rs, rowNum) -> new Employee(rs.getInt("id"), rs.getString("first_name"), rs.getString("last_name"),rs.getString("birthdate"),rs.getDouble("salary"))
