@@ -33,7 +33,7 @@ public class FileDataRepository {
 
         jdbcTemplate.execute("DROP TABLE employees IF EXISTS");
         jdbcTemplate.execute("CREATE TABLE employees(" +
-                "id INT PRIMARY KEY, first_name VARCHAR(255) UNIQUE , last_name VARCHAR(255), birthdate VARCHAR(255), SALARY DOUBLE(10.2))");
+                "id INT PRIMARY KEY, first_name VARCHAR(255) UNIQUE , last_name VARCHAR(255) NOT NULL, birthdate VARCHAR(255), SALARY DOUBLE(10.2))");
 
         List<Object[]> splitRecord = result.stream().skip(1)
                 .map(record -> record.split(","))
@@ -48,8 +48,8 @@ public class FileDataRepository {
 
 
             }catch (Exception e) {
-                    if (e.getCause() instanceof BatchUpdateException) {
-                        BatchUpdateException be = (BatchUpdateException) e.getCause();
+                    if (e instanceof BatchUpdateException) {
+                        BatchUpdateException be = (BatchUpdateException) e;
                         int[] batchRes = be.getUpdateCounts();
                         if (batchRes != null && batchRes.length > 0) {
                             for (int index = 0; index < batchRes.length; index++) {
@@ -63,9 +63,9 @@ public class FileDataRepository {
                     }
                     if (e instanceof DuplicateKeyException) {
                         DuplicateKeyException be = (DuplicateKeyException) e;
-                        logger.error("Record already exist ");
+                        logger.error("Record already exist "+e.getMessage());
                     }
-
+                    logger.error("An unexpected error occured "+e.getMessage());
                     batchRunData.increamentFailedRecords();
 
                     continue;
@@ -79,5 +79,6 @@ public class FileDataRepository {
         ).forEach(employee -> logger.info("Read employee "+employee.toString()));
 
         logger.info("Batch Summary "+batchRunData.toString());
+        batchRunData.reset();
     }
 }

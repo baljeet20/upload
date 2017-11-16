@@ -38,4 +38,9 @@ public class BatchRunData {
                 ", failedRecords=" + failedRecords +
                 '}';
     }
+
+    public void reset() {
+        successRecords=0;
+        failedRecords=0;
+    }
 }
